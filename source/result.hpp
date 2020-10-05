@@ -37,12 +37,8 @@
 	#define RESULT_NOEXCEPT 
 #endif
 
-#include <cassert>
-#define RESULT_ASSERT(assertion) assert(assertion)
 
-
-
-namespace Lib
+namespace Wrench
 {
 	/*!
 		\brief The function stops execution of a program
@@ -62,9 +58,9 @@ namespace Lib
 	template <typename T>
 	struct TOkValue
 	{
-		TOkValue() = delete;
-		TOkValue(const T& value): mValue(value) { }
-		TOkValue(T&& value): mValue(std::move(value)) { }
+		TOkValue() RESULT_NOEXCEPT = delete;
+		TOkValue(const T& value) RESULT_NOEXCEPT : mValue(value) { }
+		TOkValue(T&& value) RESULT_NOEXCEPT : mValue(std::move(value)) { }
 
 		T mValue;
 	};
@@ -75,9 +71,9 @@ namespace Lib
 	template <typename E>
 	struct TErrValue
 	{
-		TErrValue() = delete;
-		TErrValue(const E& value) : mError(value) { }
-		TErrValue(E&& value) : mError(std::move(value)) { }
+		TErrValue() RESULT_NOEXCEPT = delete;
+		TErrValue(const E& value) RESULT_NOEXCEPT : mError(value) { }
+		TErrValue(E&& value) RESULT_NOEXCEPT : mError(std::move(value)) { }
 
 		E mError;
 	};
@@ -94,26 +90,26 @@ namespace Lib
 
 			using StorageImpl = typename std::aligned_storage<mSize, mAlignment>::type;
 		public:
-			Storage(): mIsInitialized(false), mIsValid(false) { }
+			Storage() RESULT_NOEXCEPT : mIsInitialized(false), mIsValid(false) { }
 
-			Storage(const TOkValue<T>& value) :
+			Storage(const TOkValue<T>& value) RESULT_NOEXCEPT :
 				mIsInitialized(true), mIsValid(true)
 			{ 
 				new (&mData) T(value.mValue);
 			}
 
-			Storage(const TErrValue<E>& value) : 
+			Storage(const TErrValue<E>& value) RESULT_NOEXCEPT :
 				mIsInitialized(true), mIsValid(false)
 			{
 				new (&mData) E(value.mError);
 			}
 
-			~Storage()
+			~Storage() RESULT_NOEXCEPT
 			{
 				_release();
 			}
 
-			void Reset(const TOkValue<T>& value)
+			void Reset(const TOkValue<T>& value) RESULT_NOEXCEPT
 			{
 				if (mIsInitialized)
 				{
@@ -126,7 +122,7 @@ namespace Lib
 				mIsValid = true;
 			}
 
-			void Reset(const TErrValue<E>& value)
+			void Reset(const TErrValue<E>& value) RESULT_NOEXCEPT
 			{
 				if (mIsInitialized)
 				{
@@ -139,21 +135,21 @@ namespace Lib
 			}
 
 			template <typename U>
-			const U& GetAs() const
+			const U& GetAs() const RESULT_NOEXCEPT
 			{
 				return *reinterpret_cast<const U*>(&mData);
 			}
 
 			template <typename U>
-			U& GetAs()
+			U& GetAs() RESULT_NOEXCEPT
 			{
 				return *reinterpret_cast<U*>(&mData);
 			}
 
-			bool IsValid() const { return mIsValid; }
+			bool IsValid() const RESULT_NOEXCEPT { return mIsValid; }
 
 		private:
-			void _release()
+			void _release() RESULT_NOEXCEPT
 			{
 				if (mIsInitialized)
 				{
@@ -188,25 +184,25 @@ namespace Lib
 			using StorageImpl = typename std::aligned_storage<sizeof(E), alignof(E)>::type;
 
 		public:
-			Storage() : mIsInitialized(false), mIsValid(false) { }
+			Storage() RESULT_NOEXCEPT : mIsInitialized(false), mIsValid(false) { }
 
-			Storage(const TOkValue<void>& value) :
+			Storage(const TOkValue<void>& value) RESULT_NOEXCEPT :
 				mIsInitialized(true), mIsValid(true)
 			{
 			}
 
-			Storage(const TErrValue<E>& value) :
+			Storage(const TErrValue<E>& value) RESULT_NOEXCEPT :
 				mIsInitialized(true), mIsValid(false)
 			{
 				new (&mData) E(value.mError);
 			}
 
-			~Storage()
+			~Storage() RESULT_NOEXCEPT
 			{
 				_release();
 			}
 
-			void Reset(const TOkValue<void>& value)
+			void Reset(const TOkValue<void>& value) RESULT_NOEXCEPT
 			{
 				if (mIsInitialized)
 				{
@@ -217,7 +213,7 @@ namespace Lib
 				mIsValid = true;
 			}
 
-			void Reset(const TErrValue<E>& value)
+			void Reset(const TErrValue<E>& value) RESULT_NOEXCEPT
 			{
 				if (mIsInitialized)
 				{
@@ -230,15 +226,15 @@ namespace Lib
 			}
 
 			template <typename U>
-			const U& GetAs() const
+			const U& GetAs() const RESULT_NOEXCEPT
 			{
 				return *reinterpret_cast<U*>(&mData);
 			}
 
-			bool IsValid() const { return mIsValid; }
+			bool IsValid() const RESULT_NOEXCEPT { return mIsValid; }
 
 		private:
-			void _release()
+			void _release() RESULT_NOEXCEPT
 			{
 				if (mIsInitialized)
 				{
@@ -269,21 +265,21 @@ namespace Lib
 			using ResultStorage = Storage<T, E>;
 
 		public:
-			Result() = delete;
+			Result() RESULT_NOEXCEPT = delete;
 
-			Result(const TOkValue<T>& value): mData(value) { }
-			Result(const TErrValue<E>& error) : mData(error) { }
+			Result(const TOkValue<T>& value) RESULT_NOEXCEPT : mData(value) { }
+			Result(const TErrValue<E>& error) RESULT_NOEXCEPT : mData(error) { }
 
-			Result(const Result& result) : mData(result.mData) { }
-			Result(Result&& result) : mData(std::move(result.mData)) { }
+			Result(const Result& result) RESULT_NOEXCEPT : mData(result.mData) { }
+			Result(Result&& result) RESULT_NOEXCEPT : mData(std::move(result.mData)) { }
 
-			~Result() = default;
+			~Result() RESULT_NOEXCEPT = default;
 
 			/// Methods
 
 			template <typename U = T>
 			typename std::enable_if<!std::is_same<U, void>::value, U>::type
-				Get() const
+				Get() const RESULT_NOEXCEPT
 			{
 				if (!mData.IsValid())
 				{
@@ -295,19 +291,19 @@ namespace Lib
 
 			template <typename U = T>
 			typename std::enable_if<!std::is_same<U, void>::value, U>::type
-				GetOrDefault(U&& altValue)
+				GetOrDefault(U&& altValue) RESULT_NOEXCEPT
 			{
 				if (!mData.IsValid())
 				{
 					return std::forward<U>(altValue);
 				}
 
-				return mData.template GetAs<T>();
+				return mData.GetAs<T>();
 			}
 
 			template <typename U = E>
 			typename std::enable_if<!std::is_same<U, void>::value, U>::type
-				GetError() const
+				GetError() const RESULT_NOEXCEPT
 			{
 				if (mData.IsValid())
 				{
@@ -317,36 +313,36 @@ namespace Lib
 				return mData.GetAs<E>();
 			}
 
-			bool IsOk() const { return mData.IsValid(); }
-			bool HasError() const { return !mData.IsValid(); }
+			bool IsOk() const RESULT_NOEXCEPT { return mData.IsValid(); }
+			bool HasError() const RESULT_NOEXCEPT { return !mData.IsValid(); }
 
 			/// Operators section
 
-			Result<T, E>& operator= (const TOkValue<T>& value)
+			Result<T, E>& operator= (const TOkValue<T>& value) RESULT_NOEXCEPT
 			{
 				mData.Reset(value);
 				return *this;
 			}
 
-			Result<T, E>& operator= (const TErrValue<E>& error)
+			Result<T, E>& operator= (const TErrValue<E>& error) RESULT_NOEXCEPT
 			{
 				mData.Reset(error);
 				return *this;
 			}
 
-			Result<T, E>& operator= (const Result<T, E>& result)
+			Result<T, E>& operator= (const Result<T, E>& result) RESULT_NOEXCEPT
 			{
 				mData.Reset(result.mData);
 				return *this;
 			}
 
-			Result<T, E>& operator= (Result<T, E>&& result)
+			Result<T, E>& operator= (Result<T, E>&& result) RESULT_NOEXCEPT
 			{
 				std::swap(mData, result.mData);
 				return *this;
 			}
 
-			operator bool() const { return mData.IsValid(); }
+			operator bool() const RESULT_NOEXCEPT { return mData.IsValid(); }
 		private:
 			ResultStorage mData;
 	};

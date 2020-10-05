@@ -2,7 +2,7 @@
 #include "result.hpp"
 
 
-using namespace Lib;
+using namespace Wrench;
 
 
 struct TScopeGuard
