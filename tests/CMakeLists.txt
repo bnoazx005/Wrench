@@ -29,6 +29,7 @@ set(HEADERS )
 
 set(SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}/resultTests.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/stringUtilsTests.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 
 source_group("includes" FILES ${HEADERS})
