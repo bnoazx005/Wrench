@@ -298,7 +298,7 @@ namespace Wrench
 					return std::forward<U>(altValue);
 				}
 
-				return mData.GetAs<T>();
+				return mData.template GetAs<T>();
 			}
 
 			template <typename U = E>
@@ -310,7 +310,7 @@ namespace Wrench
 					Panic("[Result<T, E>] GetError() was invoked for a valid Result<T, E> object");
 				}
 
-				return mData.GetAs<E>();
+				return mData.template GetAs<E>();
 			}
 
 			bool IsOk() const RESULT_NOEXCEPT { return mData.IsValid(); }
