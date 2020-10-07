@@ -79,7 +79,7 @@ namespace Wrench
 				\return The method returns an empty string
 			*/
 
-			static std::string GetEmptyStr() STR_UTILS_NOEXCEPT;
+			static const std::string& GetEmptyStr() STR_UTILS_NOEXCEPT;
 
 			/*!
 				\brief The method checks up whether the given string stars from specified prefix string or not
@@ -210,7 +210,7 @@ namespace Wrench
 		return std::move(tokens);
 	}
 
-	std::string StringUtils::GetEmptyStr() STR_UTILS_NOEXCEPT
+	const std::string& StringUtils::GetEmptyStr() STR_UTILS_NOEXCEPT
 	{
 		return mEmptyStr;
 	}
