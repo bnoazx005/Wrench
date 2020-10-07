@@ -23,6 +23,7 @@
 #include <string>
 #include <cctype>
 #include <sstream>
+#include <array>
 
 
 ///< Library's configs
