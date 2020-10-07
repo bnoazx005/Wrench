@@ -28,12 +28,44 @@
 
 ///< Library's configs
 #define STR_UTILS_DISABLE_EXCEPTIONS 1
+#define STR_UTILS_ENABLE_EXPORT 1
 
 
 #if STR_UTILS_DISABLE_EXCEPTIONS
 #define STR_UTILS_NOEXCEPT noexcept
 #else
 #define STR_UTILS_NOEXCEPT 
+#endif
+
+
+#if STR_UTILS_ENABLE_EXPORT
+	#if defined(_WIN32) || defined(_MSC_VER)
+		#if !defined(WRENCH_APIENTRY)
+			#define WRENCH_APIENTRY __cdecl					///< Calling convention for VS
+		#endif	
+
+		#if !defined(WRENCH_API)
+			#if defined(WRENCH_DLLIMPORT)
+				#define WRENCH_API __declspec(dllimport)
+			#else
+				#define WRENCH_API __declspec(dllexport)
+			#endif
+		#endif
+	#elif defined(__GNUC__)
+		#if !defined(WRENCH_APIENTRY)
+			#define WRENCH_APIENTRY __attribute__((cdecl))	///< Calling convention for GNUC
+		#endif
+
+		#if !defined(WRENCH_API)
+			#if defined(WRENCH_DLLIMPORT)
+				#define WRENCH_API 
+			#else
+				#define WRENCH_API __attribute__((visibility("default")))
+			#endif
+		#endif
+	#else /// Unknown platform and compiler
+		#define WRENCH_API 
+	#endif
 #endif
 
 
@@ -50,7 +82,7 @@ namespace Wrench
 				\return A processed string where a continuous sequence of whitespaces is replaced with a single one
 			*/
 
-			static std::string RemoveExtraWhitespaces(const std::string& str) STR_UTILS_NOEXCEPT;
+			WRENCH_API static std::string WRENCH_APIENTRY RemoveExtraWhitespaces(const std::string& str) STR_UTILS_NOEXCEPT;
 
 			/*!
 				\brief The method remove all whitespaces from a given string
@@ -60,7 +92,7 @@ namespace Wrench
 				\return A processed string without spaces
 			*/
 
-			static std::string RemoveAllWhitespaces(const std::string& str) STR_UTILS_NOEXCEPT;
+			WRENCH_API static std::string WRENCH_APIENTRY RemoveAllWhitespaces(const std::string& str) STR_UTILS_NOEXCEPT;
 
 			/*!
 				\brief The method splits a given string into an array of substring which are separated with given delimiters
@@ -72,7 +104,7 @@ namespace Wrench
 				\return An array of substring that are separated with delimiters
 			*/
 
-			static std::vector<std::string> Split(const std::string& str, const std::string& delims) STR_UTILS_NOEXCEPT;
+			WRENCH_API static std::vector<std::string> WRENCH_APIENTRY Split(const std::string& str, const std::string& delims) STR_UTILS_NOEXCEPT;
 
 			/*!
 				\brief The method returns an empty string
@@ -80,7 +112,7 @@ namespace Wrench
 				\return The method returns an empty string
 			*/
 
-			static const std::string& GetEmptyStr() STR_UTILS_NOEXCEPT;
+			WRENCH_API static const std::string& WRENCH_APIENTRY GetEmptyStr() STR_UTILS_NOEXCEPT;
 
 			/*!
 				\brief The method checks up whether the given string stars from specified prefix string or not
@@ -88,7 +120,7 @@ namespace Wrench
 				\return Returns true if first parameter contains the second as a prefix
 			*/
 
-			static bool StartsWith(const std::string& str, const std::string& prefix) STR_UTILS_NOEXCEPT;
+			WRENCH_API static bool WRENCH_APIENTRY StartsWith(const std::string& str, const std::string& prefix) STR_UTILS_NOEXCEPT;
 
 			template <typename... TArgs>
 			static std::string Format(const std::string& formatStr, TArgs&&... args) STR_UTILS_NOEXCEPT
