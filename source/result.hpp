@@ -29,6 +29,7 @@
 
 ///< Library's configs
 #define RESULT_DISABLE_EXCEPTIONS 1
+#define RESULT_ENABLE_EXPORT 1
 
 
 #if RESULT_DISABLE_EXCEPTIONS
@@ -286,7 +287,7 @@ namespace Wrench
 					Panic("[Result<T, E>] Get() was invoked for an invalid Result<T, E> object");
 				}
 
-				return mData.template GetAs<T>();
+				return mData.template GetAs<U>();
 			}
 
 			template <typename U = T>
@@ -298,7 +299,7 @@ namespace Wrench
 					return std::forward<U>(altValue);
 				}
 
-				return mData.template GetAs<T>();
+				return mData.template GetAs<U>();
 			}
 
 			template <typename U = E>
@@ -310,7 +311,7 @@ namespace Wrench
 					Panic("[Result<T, E>] GetError() was invoked for a valid Result<T, E> object");
 				}
 
-				return mData.template GetAs<E>();
+				return mData.template GetAs<U>();
 			}
 
 			bool IsOk() const RESULT_NOEXCEPT { return mData.IsValid(); }
