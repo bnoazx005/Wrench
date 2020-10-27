@@ -75,6 +75,18 @@ namespace Wrench
 	{
 		public:
 			/*!
+				\brief The method replaces all occurrences of {what} onto {replacement} value
+				
+				\param[in] input Input string
+				\param[in] what A substring that should be replaced
+				\param[in] replacement A value that should be injected instead of {what} value
+
+				\return Transformed string which is the same as input one except occurrences of {what} substrings
+			*/
+
+			WRENCH_API static std::string WRENCH_APIENTRY ReplaceAll(const std::string& input, const std::string& what, const std::string& replacement);
+
+			/*!
 				\brief The method removes all extra whitespaces from a given string
 
 				\param[in] str A processing string
@@ -180,6 +192,21 @@ namespace Wrench
 
 	const std::string StringUtils::mEmptyStr {};
 
+
+	std::string StringUtils::ReplaceAll(const std::string& input, const std::string& what, const std::string& replacement)
+	{
+		std::string output = input;
+
+		std::string::size_type pos = 0;
+		std::string::size_type whatStrLength = what.length();
+
+		while ((pos = output.find_first_of(what)) != std::string::npos)
+		{
+			output = output.substr(0, pos) + replacement + output.substr(pos + whatStrLength);
+		}
+
+		return output;
+	}
 
 	std::string StringUtils::RemoveExtraWhitespaces(const std::string& str) STR_UTILS_NOEXCEPT
 	{
