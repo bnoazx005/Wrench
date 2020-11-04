@@ -69,4 +69,19 @@ TEST_CASE("stringUtils Tests")
 			REQUIRE(StringUtils::StartsWith(std::get<0>(currTestCase), std::get<1>(currTestCase)) == std::get<bool>(currTestCase));
 		}
 	}
+
+	SECTION("TestReplaceAll_PassStringWithoutReplacingSubstrs_ReturnsOriginalString")
+	{
+		REQUIRE("test" == StringUtils::ReplaceAll("test", "1", "2"));
+	}
+
+	SECTION("TestEndsWith_PassEmptyString_ReturnsFalse")
+	{
+		REQUIRE(!StringUtils::EndsWith(StringUtils::GetEmptyStr(), "test"));
+	}
+
+	SECTION("TestEndsWith_PassStringWithSuffix_ReturnsTrue")
+	{
+		REQUIRE(StringUtils::EndsWith("test123", "123"));
+	}
 }

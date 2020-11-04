@@ -134,6 +134,14 @@ namespace Wrench
 
 			WRENCH_API static bool WRENCH_APIENTRY StartsWith(const std::string& str, const std::string& prefix) STR_UTILS_NOEXCEPT;
 
+			/*!
+				\brief The method checks up whether the given string ends with specified suffix string or not
+
+				\return Returns true if first parameter contains the second as a prefix
+			*/
+
+			WRENCH_API static bool WRENCH_APIENTRY EndsWith(const std::string& str, const std::string& suffix) STR_UTILS_NOEXCEPT;
+
 			template <typename... TArgs>
 			static std::string Format(const std::string& formatStr, TArgs&&... args) STR_UTILS_NOEXCEPT
 			{
@@ -278,6 +286,17 @@ namespace Wrench
 	bool StringUtils::StartsWith(const std::string& str, const std::string& prefix) STR_UTILS_NOEXCEPT
 	{
 		return str.rfind(prefix, 0) == 0;
+	}
+
+	bool StringUtils::EndsWith(const std::string& str, const std::string& suffix) STR_UTILS_NOEXCEPT
+	{
+		if (suffix.length() > str.length())
+		{
+			return false;
+		}
+
+		size_t pos = std::max<size_t>(0, str.length() - suffix.length());
+		return str.rfind(suffix, pos) == pos;
 	}
 
 
