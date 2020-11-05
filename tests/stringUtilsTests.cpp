@@ -75,6 +75,11 @@ TEST_CASE("stringUtils Tests")
 		REQUIRE("test" == StringUtils::ReplaceAll("test", "1", "2"));
 	}
 
+	SECTION("TestReplaceAll_PassSubstringThatPartiallyMatches_ReturnsOriginalString")
+	{
+		REQUIRE("/" == StringUtils::ReplaceAll("/", "//", "."));
+	}
+
 	SECTION("TestEndsWith_PassEmptyString_ReturnsFalse")
 	{
 		REQUIRE(!StringUtils::EndsWith(StringUtils::GetEmptyStr(), "test"));

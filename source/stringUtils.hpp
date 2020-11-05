@@ -208,7 +208,7 @@ namespace Wrench
 		std::string::size_type pos = 0;
 		std::string::size_type whatStrLength = what.length();
 
-		while ((pos = output.find_first_of(what)) != std::string::npos)
+		while ((pos = output.find(what)) != std::string::npos)
 		{
 			output = output.substr(0, pos) + replacement + output.substr(pos + whatStrLength);
 		}
