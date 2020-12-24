@@ -39,4 +39,26 @@ TEST_CASE("Variant Tests")
 
 		REQUIRE((v.Is<std::string>() && v.As<std::string>() == expectedStr));
 	}
+
+	SECTION("TestVariant_PassNonPODType_CorrectlyDestructsIt")
+	{
+		struct TScopeGuard
+		{
+			TScopeGuard(const std::function<void()>& action) : mAction(action) {}
+			~TScopeGuard()
+			{
+				mAction();
+			}
+
+			std::function<void()> mAction;
+		};
+
+		bool hasDestroyed = false;
+
+		{
+			Variant<TScopeGuard> v = MakeVariant<TScopeGuard, TScopeGuard>(TScopeGuard([&hasDestroyed] { hasDestroyed = true; }));
+		}
+
+		REQUIRE(hasDestroyed);
+	}
 }

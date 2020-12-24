@@ -14,6 +14,7 @@
 
 
 #include <algorithm>
+#include <cassert>
 
 
 ///< Library's configs
@@ -140,12 +141,24 @@ namespace Wrench
 			template <typename T>
 			const T& As() const VARIANT_NOEXCEPT
 			{
+				if (!Is<T>())
+				{
+					assert(false);
+					std::terminate();
+				}
+
 				return reinterpret_cast<const T&>(mStorage);
 			}
 
 			template <typename T>
 			T& As() VARIANT_NOEXCEPT
 			{
+				if (!Is<T>())
+				{
+					assert(false);
+					std::terminate();
+				}
+
 				return reinterpret_cast<T&>(mStorage);
 			}
 		private:
@@ -158,7 +171,6 @@ namespace Wrench
 	Variant<TArgs...> MakeVariant(T value)
 	{
 		Variant<TArgs...> v; v = std::forward<T>(value);
-
 		return std::move(v);
 	}
 }
