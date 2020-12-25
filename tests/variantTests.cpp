@@ -9,7 +9,8 @@ TEST_CASE("Variant Tests")
 {
 	SECTION("TestTMaxSize_PassTypes_ReturnsSizeOfLongestOne")
 	{
-		REQUIRE(TMaxSize<int, char>::mValue == sizeof(int));
+		REQUIRE(GetMaxSize<int, char>() == sizeof(int));
+		REQUIRE(GetMaxSize<int>() == sizeof(int));
 	}
 
 	SECTION("TestFindType_PassTypes_ReturnIndexOfType")

@@ -37,32 +37,20 @@ namespace Wrench
 		If you don't want to be scared just skip this horrible meta-programming magic stuffs
 	*/
 
-	template <typename... TArgs> 
-	struct TMaxSize
-	{
-		static constexpr size_t mValue = 0;
-	};
-
-	template <typename T, typename... TArgs> 
-	struct TMaxSize<T, TArgs...>
-	{
-		static constexpr size_t mValue = std::max<size_t>(sizeof(T), TMaxSize<TArgs...>::mValue);
-	};
+	template <typename... TArgs> struct TCountOf;
+	template<> struct TCountOf<> { static constexpr size_t mValue = 0; };
+	template <typename T, typename... TArgs> struct TCountOf<T, TArgs...> { static constexpr size_t mValue = 1 + TCountOf<TArgs...>::mValue;	};
 
 
-	template <typename... TArgs>
-	struct TMaxAlignOf
-	{
-		static constexpr size_t mValue = 0;
-	};
+	template <typename T> constexpr size_t GetMaxSize() { return sizeof(T); }
 
 	template <typename T, typename... TArgs>
-	struct TMaxAlignOf<T, TArgs...>
+	constexpr typename std::enable_if<TCountOf<TArgs...>::mValue != 0, size_t>::type GetMaxSize()
 	{
-		static constexpr size_t mValue = std::max<size_t>(alignof(T), TMaxSize<TArgs...>::mValue);
-	};
+		return sizeof(T) > GetMaxSize<TArgs...>() ? sizeof(T) : GetMaxSize<TArgs...>();
+	}
 
-	
+
 	template <size_t, typename>	constexpr size_t GetIndexOfTypeInternal() { return (std::numeric_limits<size_t>::max)(); } // nothing found
 
 	template <size_t index, typename TWhat, typename TCurrent, typename... TArgs>
@@ -84,7 +72,7 @@ namespace Wrench
 	class Variant
 	{
 		public:
-			using TStorageType = typename std::aligned_storage<TMaxSize<TArgs...>::mValue>::type;
+			using TStorageType = typename std::aligned_storage<GetMaxSize<TArgs...>()>::type;
 			using TTypeIndex = size_t;
 		public:
 			Variant() VARIANT_NOEXCEPT :
