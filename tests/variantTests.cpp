@@ -14,8 +14,8 @@ TEST_CASE("Variant Tests")
 
 	SECTION("TestFindType_PassTypes_ReturnIndexOfType")
 	{
-		REQUIRE(TFindType<int, float, std::string, char, int>::mValue == 3); 
-		REQUIRE(TFindType<int, float, std::string, char>::mValue == 3); // 3 means there is no given type
+		REQUIRE(GetIndexOfType<int, float, std::string, char, int>() == 3);
+		REQUIRE(GetIndexOfType<int, float, std::string, char>() == (std::numeric_limits<size_t>::max)()); // 3 means there is no given type
 	}
 
 	SECTION("TestVariant_CreateSomeObjects_CorrectlyInitializesInternalState")

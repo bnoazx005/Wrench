@@ -62,25 +62,16 @@ namespace Wrench
 		static constexpr size_t mValue = std::max<size_t>(alignof(T), TMaxSize<TArgs...>::mValue);
 	};
 
+	
+	template <size_t, typename>	constexpr size_t GetIndexOfTypeInternal() { return (std::numeric_limits<size_t>::max)(); } // nothing found
 
-	template <typename TWhat, typename TCurrent, typename... TArgs>
-	struct TFindType
+	template <size_t index, typename TWhat, typename TCurrent, typename... TArgs>
+	constexpr size_t GetIndexOfTypeInternal()
 	{
-		static constexpr size_t mValue = TFindType<TWhat, TArgs...>::mValue + 1;
-	};
+		return std::is_same<TWhat, TCurrent>::value ? index : GetIndexOfTypeInternal<index + 1, TWhat, TArgs...>();
+	}
 
-	template <typename TWhat, typename TCurrent>
-	struct TFindType<TWhat, TCurrent>
-	{
-		static constexpr size_t mValue = 1;
-	};
-
-	template <typename TWhat, typename... TArgs>
-	struct TFindType<TWhat, TWhat, TArgs...>
-	{
-		static constexpr size_t mValue = 0;
-	};
-
+	template <typename TWhat, typename... TArgs> constexpr size_t GetIndexOfType() { return GetIndexOfTypeInternal<0, TWhat, TArgs...>(); }
 
 
 	/*!
@@ -125,7 +116,7 @@ namespace Wrench
 					mStorage.~TStorageType();
 				}
 
-				mCurrTypeId = TFindType<T, TArgs...>::mValue;
+				mCurrTypeId = GetIndexOfType<T, TArgs...>();
 
 				new (&mStorage) T(value);
 
@@ -135,7 +126,7 @@ namespace Wrench
 			template <typename T>
 			bool Is() const VARIANT_NOEXCEPT
 			{
-				return mCurrTypeId == TFindType<T, TArgs...>::mValue;
+				return mCurrTypeId == GetIndexOfType<T, TArgs...>();
 			}
 
 			template <typename T>
