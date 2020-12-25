@@ -74,6 +74,13 @@ namespace Wrench
 		public:
 			using TStorageType = typename std::aligned_storage<GetMaxSize<TArgs...>()>::type;
 			using TTypeIndex = size_t;
+
+			friend void Swap(Variant<TArgs...>& v1, Variant<TArgs...>& v2)
+			{
+				std::swap(v1.mStorage, v2.mStorage);
+				std::swap(v1.mCurrTypeId, v2.mCurrTypeId);
+			}
+
 		public:
 			Variant() VARIANT_NOEXCEPT :
 				mStorage(), mCurrTypeId(0)
@@ -109,6 +116,22 @@ namespace Wrench
 				new (&mStorage) T(value);
 
 				return value;
+			}
+
+			Variant<TArgs...>& operator= (Variant<TArgs...> value) VARIANT_NOEXCEPT
+			{
+				mStorage.~TStorageType();
+
+				Swap(*this, value);
+				return *this;
+			}
+
+			Variant<TArgs...>& operator= (Variant<TArgs...>&& value) VARIANT_NOEXCEPT
+			{
+				mStorage.~TStorageType();
+
+				Swap(*this, value);
+				return *this;
 			}
 
 			template <typename T>
