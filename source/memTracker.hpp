@@ -21,11 +21,17 @@
 
 
 #include <cassert>
+#include <cstdlib>
+#include <cstdint>
+#include <cstdio>
 
 
 ///< Library's configs
 #define MEM_TRACKER_DISABLE_EXCEPTIONS 1
 #define MEM_TRACKER_ENABLE_EXPORT 1
+#define MEM_TRACKER_REDEFINE_NEW_KEYWORD 1
+
+#define MEM_TRACKER_DEBUG_OUTPUT_STREAM stdout
 
 
 #if MEM_TRACKER_DISABLE_EXCEPTIONS
