@@ -100,9 +100,8 @@ namespace Wrench
 	} TMemAllocationInfo, *TMemAllocationInfoPtr;
 
 
-#if defined(MEM_TRACKER_IMPLEMENTATION)
 	static TMemInfo MemoryTrackerInfo;
-#endif
+
 
 	WRENCH_API const TMemInfo& WRENCH_APIENTRY GetMemoryInfo();
 
