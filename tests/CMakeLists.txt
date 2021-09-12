@@ -31,6 +31,7 @@ set(SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}/resultTests.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/stringUtilsTests.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/variantTests.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/deferTests.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 
 source_group("includes" FILES ${HEADERS})
