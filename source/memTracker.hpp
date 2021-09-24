@@ -112,7 +112,7 @@ namespace Wrench
 	WRENCH_API const TMemInfo& WRENCH_APIENTRY GetMemoryInfo();
 
 
-	WRENCH_API void PushMemTrackInfo(TMemInfo::TAllocationInfoPtr& pListHead, const TMemAllocationInfo& info, uintptr_t address) MEM_TRACKER_NOEXCEPT;
+	WRENCH_API void PushMemTrackInfo(TMemInfo::TAllocationInfoPtr& pListHead, const TMemAllocationInfo& info, uintptr_t address, size_t size) MEM_TRACKER_NOEXCEPT;
 	WRENCH_API void RemoveMemTrackInfo(uintptr_t address) MEM_TRACKER_NOEXCEPT;
 
 
