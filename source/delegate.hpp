@@ -186,4 +186,102 @@ namespace Wrench
 			DELEGATE_DECLARE_OBJECT_MUTEX;
 	};
 
+
+	template <>
+	class Delegate<> final
+	{
+		public:
+			Delegate() DELEGATE_NOEXCEPT
+				: mFirstFreeEntityIndex((std::numeric_limits<size_t>::max)()) {}
+			~Delegate() DELEGATE_NOEXCEPT { UnsubscribeAll(); }
+
+			TSubscriptionHandle Subscribe(std::function<void()> listener) DELEGATE_NOEXCEPT
+			{
+				DELEGATE_LOCK_THREAD;
+
+				if (!listener)
+				{
+					return TSubscriptionHandle::Invalid;
+				}
+
+	#if 0 /// \todo
+				auto it = std::find_if(mListeners.cbegin(), mListeners.cend(), [&listener](auto&& currEntity)
+				{
+					return reinterpret_cast<uintptr_t>(currEntity.target()) == reinterpret_cast<uintptr_t>(listener.target());
+				});
+				if (it != mListeners.cend())
+				{
+					return static_cast<TSubscriptionHandle>(std::distance(mListeners.cbegin(), it)); /// \note The listener's already been registered so return its handle
+				}
+	#endif
+
+				if (mFirstFreeEntityIndex < mListeners.size())
+				{
+					mListeners[mFirstFreeEntityIndex] = std::move(listener);
+					auto result = static_cast<TSubscriptionHandle>(mFirstFreeEntityIndex);
+
+					mFirstFreeEntityIndex = mListeners.size();
+
+					return result;
+				}
+
+				mListeners.emplace_back(listener);
+
+				return static_cast<TSubscriptionHandle>(mListeners.size() - 1);
+			}
+
+			bool Unsubscribe(TSubscriptionHandle subscriptionHandle) DELEGATE_NOEXCEPT
+			{
+				DELEGATE_LOCK_THREAD;
+
+				size_t index = static_cast<size_t>(subscriptionHandle);
+				if (index >= mListeners.size())
+				{
+					WRENCH_ASSERT(false);
+					return false;
+				}
+
+				if (!mListeners[index])
+				{
+					return false;
+				}
+
+				mListeners[index] = nullptr;
+				mFirstFreeEntityIndex = static_cast<size_t>(subscriptionHandle);
+
+				return true;
+			}
+
+			void UnsubscribeAll() DELEGATE_NOEXCEPT
+			{
+				DELEGATE_LOCK_THREAD;
+
+				mFirstFreeEntityIndex = (std::numeric_limits<size_t>::max)();
+				mListeners.clear();
+			}
+
+			void Notify() DELEGATE_NOEXCEPT
+			{
+				DELEGATE_LOCK_THREAD;
+
+				for (auto&& currListener : mListeners)
+				{
+					if (currListener)
+					{
+						currListener();
+					}
+				}
+			}
+
+			void operator()() DELEGATE_NOEXCEPT { Notify(); }
+
+			TSubscriptionHandle operator+= (std::function<void()> listener) DELEGATE_NOEXCEPT { return Subscribe(listener); }
+			bool operator-= (TSubscriptionHandle handle) DELEGATE_NOEXCEPT { return Unsubscribe(handle); }
+		private:
+			std::vector<std::function<void()>> mListeners;
+			size_t mFirstFreeEntityIndex = 0;
+
+			DELEGATE_DECLARE_OBJECT_MUTEX;
+	};
+
 }
