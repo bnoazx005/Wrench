@@ -33,13 +33,13 @@ set(SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}/variantTests.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/deferTests.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/delegateTests.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/randomUtilsTests.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 
 source_group("includes" FILES ${HEADERS})
 source_group("sources" FILES ${SOURCES})
 
 if (MSVC) 	#cl.exe compiler's options
-
 	#Debug compiler's options
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /std:c++14 /MDd /W3 /GS /Zc:inline /Od /Zi  /Zc:wchar_t")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /RTC1 /Gd /Oy- /EHsc /nologo /diagnostics:classic /errorReport:prompt /sdl /permissive- /analyze-")
