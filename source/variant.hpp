@@ -87,6 +87,20 @@ namespace Wrench
 			{
 			}
 
+			template <typename T>
+			Variant(T value) VARIANT_NOEXCEPT :
+				mStorage(), mCurrTypeId(0)
+			{
+				if (mCurrTypeId)
+				{
+					mStorage.~TStorageType();
+				}
+
+				mCurrTypeId = GetIndexOfType<T, TArgs...>();
+
+				new (&mStorage) T(value);
+			}
+
 			Variant(const Variant& ref) VARIANT_NOEXCEPT :
 				mStorage(ref.mStorage), mCurrTypeId(ref.mCurrTypeId)
 			{

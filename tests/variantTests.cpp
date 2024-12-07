@@ -23,13 +23,25 @@ TEST_CASE("Variant Tests")
 	{
 		Variant<int, float, std::string> t;
 		t = 5.0f;
-
+				
 		REQUIRE(t.Is<float>());
 		REQUIRE((!t.Is<char>() && !t.Is<int>()));
 
 		t = std::string("tttttt");
 
 		REQUIRE(t.Is<std::string>());
+
+		Variant<int, float, std::string> stringSigmaValue = std::string("TestValue");
+		Variant<int, float, std::string> intSigmaValue = 1;
+		Variant<int, float, std::string> floatSigmaValue = 1.0f;
+
+		REQUIRE(stringSigmaValue.Is<std::string>());
+		REQUIRE(floatSigmaValue.Is<float>());
+		REQUIRE(intSigmaValue.Is<int>());
+
+		REQUIRE(stringSigmaValue.As<std::string>() == "TestValue");
+		REQUIRE(intSigmaValue.As<int>() == 1);
+		REQUIRE(floatSigmaValue.As<float>() == 1.0f);
 	}
 
 	SECTION("TestAs_CreateStringVariantAndTryToGetItsValueWithAs_ReturnsStringBack")
