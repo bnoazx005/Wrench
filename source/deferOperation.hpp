@@ -95,7 +95,7 @@ namespace Wrench
 #define DEFER_ID(id) DEFER_CONCAT_ID(id, DEFER_CONCAT_ID(__COUNTER__, __LINE__))
 
 
-#define defer(op) const TDeferOperation DEFER_ID(deferOp)(op)
+#define defer(...) const Wrench::TDeferOperation DEFER_ID(deferOp)(__VA_ARGS__)
 
 #if defined(DEFER_IMPLEMENTATION)
 
