@@ -80,6 +80,11 @@ TEST_CASE("stringUtils Tests")
 		REQUIRE("/" == StringUtils::ReplaceAll("/", "//", "."));
 	}
 
+	SECTION("TestReplaceAll_TryToReplaceSequenceWithNewValueThatContainsThisSequence_AllOccurrancesReplacedWithoutInfiniteLoop")
+	{
+		REQUIRE(".*.*.*" == StringUtils::ReplaceAll("***", "*", ".*"));
+	}
+
 	SECTION("TestEndsWith_PassEmptyString_ReturnsFalse")
 	{
 		REQUIRE(!StringUtils::EndsWith(StringUtils::GetEmptyStr(), "test"));
@@ -89,4 +94,5 @@ TEST_CASE("stringUtils Tests")
 	{
 		REQUIRE(StringUtils::EndsWith("test123", "123"));
 	}
+
 }

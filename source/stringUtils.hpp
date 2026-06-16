@@ -203,15 +203,29 @@ namespace Wrench
 
 	std::string StringUtils::ReplaceAll(const std::string& input, const std::string& what, const std::string& replacement)
 	{
-		std::string output = input;
+		if (what.empty() || what == replacement)
+		{
+			return input;
+		}
+
+		std::string output;
+		output.reserve(input.size() * 2);
 
 		std::string::size_type pos = 0;
-		std::string::size_type whatStrLength = what.length();
+		std::string::size_type replacePos = 0;
+		const std::string::size_type whatStrLength = what.length();
 
-		while ((pos = output.find(what)) != std::string::npos)
+		const std::string::size_type replacementSize = replacement.length();
+
+		while ((replacePos = input.find(what, pos)) != std::string::npos)
 		{
-			output = output.substr(0, pos) + replacement + output.substr(pos + whatStrLength);
+			output.append(input, pos, replacePos - pos);
+			output.append(replacement);
+
+			pos = replacePos + whatStrLength;
 		}
+
+		output.append(input, pos, std::string::npos);
 
 		return output;
 	}
